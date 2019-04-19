@@ -11,8 +11,6 @@ syntax on
 au BufRead,BufNewFile *.q set filetype=sql
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 
-execute pathogen#infect()
-
 filetype plugin indent on
 " On pressing tab, insert 2 spaces
 set expandtab

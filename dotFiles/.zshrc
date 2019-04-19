@@ -1,6 +1,8 @@
 # If you come from bash you might have to change your $PATH.
  export PATH=$HOME/bin:/usr/local/bin:$PATH
- export PATH=/Users/vgarg/workspace/apache-maven-3.6.0/bin:$PATH
+export PATH=/Users/vgarg/dev-tools/apache-maven-3.6.1/bin:$PATH
+
+source /Users/vgarg/repos/SystemSetup/dotFiles/.hive
 
 # Path to your oh-my-zsh installation.
 export ZSH="/Users/vgarg/.oh-my-zsh"
@@ -79,8 +81,7 @@ plugins=(
 )
 
 source $ZSH/oh-my-zsh.sh
-source /Users/vgarg/repos/misc/hive_tools/hive.profile.sh
-source /Users/vgarg/repos/misc/git_tools.sh
+#source /Users/vgarg/repos/misc/git_tools.sh
 
 # User configuration
 

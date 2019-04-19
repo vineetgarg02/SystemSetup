@@ -1,7 +1,7 @@
 export PATH=/Applications/IntelliJ\ IDEA\ CE.app/Contents/MacOS:$PATH
 
 # HIVE SOURCE path
-export HIVE_SRC=/Users/vgarg/repos/hive.vineet.master
+export HIVE_SRC=/Users/vgarg/repos/hive
 export HIVE_TESTS=$HIVE_SRC/ql/src/test
 
 export EARs=/Users/vgarg/EARs
@@ -12,13 +12,12 @@ set runtimepath^=~/.vim/bundle/ctrlp.vim
 export MAVEN_OPTS="-Xmx2048m -enableassertions"
 export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
 
-# export HADOOP_HOME=/Users/vgarg/workspace/hadoop-2.8.1
-export HADOOP_HOME=/Users/vgarg/workspace/hadoop-3.0.0-beta1
+export HADOOP_HOME=/Users/vgarg/dev-tools/hadoop-3.1.2
 
 export HADOOP_CLIENT_OPTS="-Xmx4096m -XX:MaxPermSize=2048m $HADOOP_CLIENT_OPTS"
 #export TEZ_JARS=/Users/vgarg/workspace/tez/apache-tez-0.8.4-bin
-export TEZ_JARS=/Users/vgarg/workspace/tez/apache-tez-0.9.1-bin
-export TEZ_CONF_DIR=/Users/vgarg/workspace/tez/apache-tez-0.9.1-bin/conf
+export TEZ_JARS=/Users/vgarg/dev-tools/apache-tez-0.9.1-bin
+export TEZ_CONF_DIR=/Users/vgarg/dev-tools/apache-tez-0.9.1-bin/conf
 #export TEZ_CONF_DIR=/Users/vgarg/workspace/tez/apache-tez-0.8.4-bin/conf
 export HADOOP_CLASSPATH=${TEZ_CONF_DIR}:${TEZ_JARS}/*:${TEZ_JARS}/lib/*
 
@@ -474,9 +473,9 @@ hiveStartHiveCli() {
 	branchVersion=$(xmllint --xpath '/*[local-name()="project"]/*[local-name()="version"]/text()' $HIVE_SRC/pom.xml)
 	if [ "$1" = "debug" ]
 	then
-		~/workspace/hive_jars/$branchName/packaging/target/apache-hive-$branchVersion-bin/apache-hive-$branchVersion-bin/bin/hive --debug
+		~/hive_jars/$branchName/packaging/target/apache-hive-$branchVersion-bin/apache-hive-$branchVersion-bin/bin/hive --debug
 	else
-		~/workspace/hive_jars/$branchName/packaging/target/apache-hive-$branchVersion-bin/apache-hive-$branchVersion-bin/bin/hive
+		~/hive_jars/$branchName/packaging/target/apache-hive-$branchVersion-bin/apache-hive-$branchVersion-bin/bin/hive
 	fi
 }
 
@@ -518,7 +517,7 @@ hiveBuildAndMovePackage() {
 	fi
 
 	branchName=$(git branch | grep ^\* | awk '{print $2}')
-	srcPath=~/workspace/hive_jars/$branchName
+	srcPath=~/hive_jars/$branchName
 	mkdir -p $srcPath
 	cp -rf packaging $srcPath/
 }
