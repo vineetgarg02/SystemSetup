@@ -9,3 +9,5 @@ function _update_ps1() {
 if [[ $TERM != linux && ! $PROMPT_COMMAND =~ _update_ps1 ]]; then
     PROMPT_COMMAND="_update_ps1; $PROMPT_COMMAND"
 fi
+
+alias 'sh ~/repos/SystemSetup/hive_tools/git_rebase.sh' git_rebase

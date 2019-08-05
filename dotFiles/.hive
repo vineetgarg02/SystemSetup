@@ -33,6 +33,8 @@ export HIVE_OPTS="$HIVE_OPTS --hiveconf tez.local.mode=true"
 export HIVE_OPTS="$HIVE_OPTS --hiveconf tez.ignore.lib.uris=true --hiveconf tez.runtime.optimize.local.fetch=true --hiveconf hive.tez.container.size=4096 --hiveconf hive.auto.convert.join.noconditionaltask.size=1370 --hiveconf hive.metastore.warehouse.dir=/Users/vgarg/hive_temp/vgarg/hive/warehouse --hiveconf hive.execution.engine=tez --hiveconf hive.user.install.directory=file:///Users/vgarg/hive_temp/vgarg/hive  --hiveconf tez.staging-dir=/Users/vgarg/hive_temp/vgarg/hive --hiveconf tez.ignore.lib.uris=true --hiveconf tez.runtime.optimize.local.fetch=true --hiveconf hive.explain.user=false --hiveconf hive.mapred.mode=nonstrict --hiveconf javax.jdo.option.ConnectionURL=jdbc:derby:;databaseName=/Users/vgarg/hive_temp/metastore_db;create=true --hiveconf hive.log.dir=/Users/vgarg/hive_temp/vgarg --hiveconf hive.log.file=hive.debug2.log "
 
 export HIVE_OPTS="$HIVE_OPTS --hiveconf hive.root.logger=DEBUG,DRFA"
+export HIVE_OPTS="$HIVE_OPTS --hiveconf hive.support.concurrency=true"
+export HIVE_OPTS="$HIVE_OPTS --hiveconf hive.txn.manager=org.apache.hadoop.hive.ql.lockmgr.DbTxnManager"
 
 # bypass CBO falling back to AST
 # export HIVE_OPTS="--hiveconf hive.in.test=true "$HIVE_OPTS
@@ -196,6 +198,11 @@ hiveRunLipwig() {
 hiveRunTest() {
     echo "mvn test -Dtest=$1 -Dqfile=$2 -Dtest.output.overwrite=true"
     mvn test -Dtest=$1 -Dqfile=$2 -Dtest.output.overwrite=true
+}
+
+hiveRunTestInternalCDPD() {
+    echo "mvn -B -Dhadoop.mr.rev=23 -Drepo.maven.org=http://nexus-private.hortonworks.com/nexus/content/groups/public -Dtest.junit.output.format=xml -Dmvn.hadoop.profile=hadoop23 -Drepoid=IN-QA -Drepourl=http://nexus-private.hortonworks.com:8081/nexus/content/repositories/IN-QA -Dmvnrepo=http://nexus-private.hortonworks.com/nexus/content/groups/public -Denforcer.skip=true -Dmaven.repo.remote=http://nexus-private.hortonworks.com/nexus/content/groups/public -Dmaven.repo.local=/Users/vgarg/.m2/repository.cdp test -Dtest=$1 -Dqfile=$2 -Dtest.output.overwrite=true"
+    mvn -B -Dhadoop.mr.rev=23 -Drepo.maven.org=http://nexus-private.hortonworks.com/nexus/content/groups/public -Dtest.junit.output.format=xml -Dmvn.hadoop.profile=hadoop23 -Drepoid=IN-QA -Drepourl=http://nexus-private.hortonworks.com:8081/nexus/content/repositories/IN-QA -Dmvnrepo=http://nexus-private.hortonworks.com/nexus/content/groups/public -Denforcer.skip=true -Dmaven.repo.remote=http://nexus-private.hortonworks.com/nexus/content/groups/public -Dmaven.repo.local=/Users/vgarg/.m2/repository.cdp test -Dtest=$1 -Dqfile=$2 -Dtest.output.overwrite=true
 }
 
 #hiveRunTest() {
@@ -491,17 +498,28 @@ hiveOverrideTestsAll() {
 	egrep "$3" $1 | perl -pe 's@.*testCliDriver_@@g' | awk '{print $1 ".q"}' | xargs -n $numFiles | perl -pe 's@ @,@g' | xargs -I{} mvn test -Dtest=$3 -Dtest.output.overwrite=true -Dqfile={}
 }
 
-hiveMakeInternal() {
-	BUILD_NUMBER=$1
-#	mvn clean install -DskipTests -Daccumulo.version=1.7.0.3.0.0.0-${BUILD_NUMBER} -Dcalcite.version=1.16.0.3.0.0.0-${BUILD_NUMBER} -Dhadoop.version=3.1.0.3.0.0.0-${BUILD_NUMBER} -Dhbase.version=2.0.0.3.0.0.0-${BUILD_NUMBER} -Dhbase.hadoop2.version=2.0.0.3.0.0.0-${BUILD_NUMBER} -Dtez.version=0.9.1.3.0.0.0-${BUILD_NUMBER} -Dzookeeper.version=3.4.6.3.0.0.0-${BUILD_NUMBER} -Dstorage-api.version=2.3.0.3.0.0.0-${BUILD_NUMBER} -Dorc.version=1.4.3.3.0.0.0-${BUILD_NUMBER} -Ddruid.version=0.12.1.3.0.0.0-${BUILD_NUMBER} -Darrow.version=0.8.0.3.0.0.0-${BUILD_NUMBER} -Dparquet.version=1.10.0.3.0.0.0-${BUILD_NUMBER} 
-	#mvn clean install -DskipTests -Phadoop-2 -Dhadoop-23.version=3.1.0.3.0.1.0-36 -Dhbase.version=2.0.0.3.0.1.0-36 -Dzookeeper.version=3.4.6.3.0.1.0-36 -Dcalcite.version=1.16.0.3.0.1.0-36 -Dtez.version=0.9.1.3.0.1.0-36 -Daccumulo.version=1.7.0.3.0.1.0-36 -Dhbase.hadoop2.version=2.0.0.3.0.1.0-36 -Davatica.version=1.10.0.3.0.1.0-36 -Dpig.version=0.16.0.3.0.1.0-36 -Dhadoop.version=3.1.0.3.0.1.0-36 -Dstorage-api.version=2.3.0.3.0.1.0-36 -Dorc.version=1.5.1.3.0.1.0-36 
-	mvn -s /Users/vgarg/.m2/settings.hdp.xml clean install -DskipTests -T 1C -Dmaven.repo.local=/Users/vgarg/.m2/repository.hdp -Phadoop-2 -Dhadoop-23.version=3.1.1.3.1.0.0-${BUILD_NUMBER} -Dhbase.version=2.0.2.3.1.0.0-${BUILD_NUMBER} -Dzookeeper.version=3.4.6.3.1.0.0-${BUILD_NUMBER} -Dcalcite.version=1.16.0.3.1.0.0-${BUILD_NUMBER} -Dtez.version=0.9.1.3.1.0.0-${BUILD_NUMBER} -Daccumulo.version=1.7.0.3.1.0.0-${BUILD_NUMBER} -Dhbase.hadoop2.version=2.0.2.3.1.0.0-${BUILD_NUMBER} -Davatica.version=1.10.0.3.1.0.0-${BUILD_NUMBER} -Dpig.version=0.16.0.3.1.0.0-${BUILD_NUMBER} -Dhadoop.version=3.1.1.3.1.0.0-${BUILD_NUMBER} -Dorc.version=1.5.1.3.1.0.0-${BUILD_NUMBER} -Ddruid.version=0.12.1.3.1.0.0-${BUILD_NUMBER}
+hiveMakeInternalCDPD() {
+ echo "mvn -B -Dhadoop.mr.rev=23 -DskipSparkTests -Drepo.maven.org=http://nexus-private.hortonworks.com/nexus/content/groups/public -Dtest.junit.output.format=xml -Dmvn.hadoop.profile=hadoop23 -Drepoid=IN-QA -Drepourl=http://nexus-private.hortonworks.com:8081/nexus/content/repositories/IN-QA -Dmvnrepo=http://nexus-private.hortonworks.com/nexus/content/groups/public clean install -DskipTests -Pdist,sources -Dmaven.javadoc.skip=true -Denforcer.skip=true -Dmaven.repo.remote=http://nexus-private.hortonworks.com/nexus/content/groups/public -Dmaven.repo.local=/Users/vgarg/.m2/repository.cdp"
+
+ mvn -B -Dhadoop.mr.rev=23 -DskipSparkTests -Drepo.maven.org=http://nexus-private.hortonworks.com/nexus/content/groups/public -Dtest.junit.output.format=xml -Dmvn.hadoop.profile=hadoop23 -Drepoid=IN-QA -Drepourl=http://nexus-private.hortonworks.com:8081/nexus/content/repositories/IN-QA -Dmvnrepo=http://nexus-private.hortonworks.com/nexus/content/groups/public clean install -DskipTests -Pdist,sources -Dmaven.javadoc.skip=true -Denforcer.skip=true -Dmaven.repo.remote=http://nexus-private.hortonworks.com/nexus/content/groups/public -Dmaven.repo.local=/Users/vgarg/.m2/repository.cdp
 }
 
-hiveRunTestInternal() {
+hiveRunInternalTestCDPD() {
+echo "mvn test -Dtest=$1 -Dqfile=$2 -Dmaven.repo.local=/Users/vgarg/.m2/repository.cdp -Dtest.output.overwrite=true"
+
+mvn test -Dtest=$1 -Dqfile=$2 -Dmaven.repo.local=/Users/vgarg/.m2/repository.cdp -Dtest.output.overwrite=true
+}
+
+
+hiveMakeInternalHDP() {
+	echo "mvn clean install -DskipTests -T 1C -Dmaven.repo.local=/Users/vgarg/.m2/repository.hdp -Phadoop-2"
+	mvn clean install -DskipTests -T 1C -Dmaven.repo.local=/Users/vgarg/.m2/repository.hdp -Phadoop-2 
+}
+
+hiveRunTestInternalHDP() {
 	BUILD_NUMBER=$1
-    echo "mvn test -Dtest=$2 -Dqfile=$3 -Dmaven.repo.local=/Users/vgarg/.m2/repository.hdp -Phadoop-2 -Dhadoop-23.version=3.1.1.3.0.1.0-${BUILD_NUMBER} -Dhbase.version=2.0.0.3.0.1.0-${BUILD_NUMBER} -Dzookeeper.version=3.4.6.3.0.1.0-${BUILD_NUMBER} -Dcalcite.version=1.16.0.3.0.1.0-${BUILD_NUMBER} -Dtez.version=0.9.1.3.0.1.0-${BUILD_NUMBER} -Daccumulo.version=1.7.0.3.0.1.0-${BUILD_NUMBER} -Dhbase.hadoop2.version=2.0.0.3.0.1.0-${BUILD_NUMBER} -Davatica.version=1.10.0.3.0.1.0-${BUILD_NUMBER} -Dpig.version=0.16.0.3.0.1.0-${BUILD_NUMBER} -Dhadoop.version=3.1.1.3.0.1.0-${BUILD_NUMBER} -Dorc.version=1.5.1.3.0.1.0-${BUILD_NUMBER} -Ddruid.version=0.12.1.3.0.1.0-${BUILD_NUMBER} -Dtest.output.overwrite=true"
-	mvn test -s /Users/vgarg/.m2/settings.hdp.xml -Dtest=$2 -Dqfile=$3 -Dmaven.repo.local=/Users/vgarg/.m2/repository.hdp -Phadoop-2 -Dhadoop-23.version=3.1.1.3.1.0.0-${BUILD_NUMBER} -Dhbase.version=2.0.2.3.1.0.0-${BUILD_NUMBER} -Dzookeeper.version=3.4.6.3.1.0.0-${BUILD_NUMBER} -Dcalcite.version=1.16.0.3.1.0.0-${BUILD_NUMBER} -Dtez.version=0.9.1.3.1.0.0-${BUILD_NUMBER} -Daccumulo.version=1.7.0.3.1.0.0-${BUILD_NUMBER} -Dhbase.hadoop2.version=2.0.2.3.1.0.0-${BUILD_NUMBER} -Davatica.version=1.10.0.3.1.0.0-${BUILD_NUMBER} -Dpig.version=0.16.0.3.1.0.0-${BUILD_NUMBER} -Dhadoop.version=3.1.1.3.1.0.0-${BUILD_NUMBER} -Dorc.version=1.5.1.3.1.0.0-${BUILD_NUMBER} -Ddruid.version=0.12.1.3.1.0.0-${BUILD_NUMBER} -Dtest.output.overwrite=true
+	echo "mvn test -Dtest=$2 -Dqfile=$3 -Dmaven.repo.local=/Users/vgarg/.m2/repository.hdp -Phadoop-2 -Dtest.output.overwrite=true"
+	mvn test -Dtest=$2 -Dqfile=$3 -Dmaven.repo.local=/Users/vgarg/.m2/repository.hdp -Dtest.output.overwrite=true
 }
 
 

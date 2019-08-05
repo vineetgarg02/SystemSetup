@@ -27,7 +27,7 @@ def putInMap(testDriver, testName):
         testMap[testDriver] = testName + '.q'
 	
 
-def runTests(issueNo):
+def runTests(issueNo, commentNum):
     options = {
     'server': 'https://issues.apache.org/jira'}
     pattern='org.apache.hadoop.hive.cli.(.*).testCliDriver\[(.*)\].*'
@@ -41,7 +41,7 @@ def runTests(issueNo):
                 if re.search('^hiveqa$', comment.author.name)]
         if all_hiveqa_comments:
             print("Found last run by HiveQA")
-            qa_comment_text = all_hiveqa_comments[-1].body
+            qa_comment_text = all_hiveqa_comments[commentNum].body
             lines = qa_comment_text.splitlines()
             for line in lines:
                 matchObj = re.match(pattern, line, re.I|re.M)
@@ -56,11 +56,13 @@ def runTests(issueNo):
 
 
 
-if len(sys.argv) < 2:
+if len(sys.argv) < 3:
     issueNo = raw_input('Enter Hive jira# (hint: HIVE-XXXXX): ')
+    commentNum=-1
 else:
     issueNo = sys.argv[1]
-runTests(issueNo)
+    commentNum = int(sys.argv[2])
+runTests(issueNo, commentNum)
 
 
 

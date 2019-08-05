@@ -117,6 +117,9 @@ alias sprintTasks='task next project:sprint'
 alias tasksCompleted='task timesheet 3'
 alias ls='ls -G'
 alias ll='ls -lG'
+alias git_rebase='sh ~/repos/SystemSetup/hive_tools/git_rebase.sh'
+alias scrib='gvim ~/Dropbox/scratch_pad.sql'
+
 
 function powerline_precmd() {
     PS1="$(powerline-shell --shell zsh $?)"

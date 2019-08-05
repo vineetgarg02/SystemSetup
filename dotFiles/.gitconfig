@@ -10,6 +10,7 @@
   new = green 
 [core]
 	autocrlf = false
+	pager = less -F -X
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
