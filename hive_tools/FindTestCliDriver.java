@@ -11,6 +11,35 @@ class FindTestCliDriver {
 
   //  map from test name to all driver names
   private Map<String, Set<String>> cliMap = null;
+  private Map<String, String> testToCliMap = null;
+
+  private void loadAndInitialize(final String fileName) {
+    if(testToCliMap != null) {
+      return;
+    }
+    System.out.println("Initializing map...");
+    try {
+      FileReader reader = new FileReader(fileName);
+      
+      // load all the properties
+      Properties p = new Properties();
+      p.load(reader);
+
+      testToCliMap = new HashMap<>();
+
+      for(Map.Entry<Object, Object> entry:p.entrySet()) {
+        String cliDriver = getCliDriverName((String)(entry.getKey()));
+        String cliTests = (String)(entry.getValue());
+        
+        String[] allTests = cliTests.split(",");
+          for(String test:allTests) {
+            testToCliMap.put(test, cliDriver);
+          }
+      }
+    } catch (Exception e) {
+      System.out.print(e.getMessage());
+    }
+  }
 
   private void initializeMap(final String fileName, final String testToFind) {
     if(cliMap != null) return;
@@ -49,7 +78,10 @@ class FindTestCliDriver {
       return "TestMiniLlapCliDriver";
     } else if("minillaplocal.query.files".equals(driver)) {
       return "TestMiniLlapLocalCliDriver";
+    } else {
+      System.err.println("Found unexpected cli driver: " + driver);
     }
+
     return driver;
   }
 

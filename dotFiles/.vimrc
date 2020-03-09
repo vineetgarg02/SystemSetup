@@ -1,17 +1,28 @@
+
+" pathogen
+execute pathogen#infect()
+syntax on
+set nocompatible
+filetype plugin indent on
+
 set hlsearch
 set number
 set ignorecase
 set smartcase
-colorscheme desert
+" colorscheme morning 
+" colorscheme slate 
+
+syntax enable
+set background=dark
+colorscheme solarized
+
 set wrap
 
 set cursorline
 
-syntax on
 au BufRead,BufNewFile *.q set filetype=sql
-set runtimepath^=~/.vim/bundle/ctrlp.vim
+" set runtimepath^=~/.vim/bundle/ctrlp.vim
 
-filetype plugin indent on
 " On pressing tab, insert 2 spaces
 set expandtab
 " show existing tab with 2 spaces width
@@ -31,3 +42,7 @@ else
   nmap ,cs :let @*=expand("%")<CR>
   nmap ,cl :let @*=expand("%:p")<CR>
 endif
+
+set hidden
+nnoremap <C-N> :bnext<CR>
+nnoremap <C-P> :bprev<CR>

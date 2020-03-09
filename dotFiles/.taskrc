@@ -29,3 +29,7 @@ include /usr/local/Cellar/task/2.5.1/share/doc/task/rc/dark-256.theme
 #include /usr/local/Cellar/task/2.5.1/share/doc/task/rc/solarized-light-256.theme
 #include /usr/local/Cellar/task/2.5.1/share/doc/task/rc/no-color.theme
 
+report.sprint.description=Simple list of current sprint tasks by project
+report.sprint.columns=id,tags,description,status,due,project
+report.sprint.labels=ID,Component,Description,Status,Due,Sprint
+report.sprint.sort=tags-/,due+

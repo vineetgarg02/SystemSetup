@@ -1,8 +1,12 @@
 # If you come from bash you might have to change your $PATH.
- export PATH=$HOME/bin:/usr/local/bin:$PATH
+export PATH=$HOME/bin:/usr/local/bin:$PATH
 export PATH=/Users/vgarg/dev-tools/apache-maven-3.6.1/bin:$PATH
 
 source /Users/vgarg/repos/SystemSetup/dotFiles/.hive
+
+autoload -U +X bashcompinit && bashcompinit
+autoload -U +X compinit && compinit
+source ~/.bashrc_aws-okta
 
 # Path to your oh-my-zsh installation.
 export ZSH="/Users/vgarg/.oh-my-zsh"
@@ -112,13 +116,36 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias cn105='ssh -v vineet@cn105-10.l42scl.hortonworks.com'
-alias hiveTasks='task list project:hive'
-alias sprintTasks='task next project:sprint'
-alias tasksCompleted='task timesheet 3'
 alias ls='ls -G'
 alias ll='ls -lG'
 alias git_rebase='sh ~/repos/SystemSetup/hive_tools/git_rebase.sh'
 alias scrib='gvim ~/Dropbox/scratch_pad.sql'
+alias gvim='gvim --remote-silent'
+
+# task warrior
+curSprint=sprint03-17Feb
+curDueDate=2020-02-17
+
+nextSprint=sprint24-09March
+nextDueDate=2020-03-08
+
+prevSprint=sprint24-09March
+alias tasks='task sprint status:compeleted or status:pending project:$curSprint'
+alias tasksCompleted='task sprint project:$curSprint status:Completed'
+alias tasksPending='task sprint project:$curSprint status:Pending'
+alias tasksNext='task sprint project:$nextSprint'
+alias tasksPrev='task sprint project:$prevSprint'
+alias tasksUnplanned='task sprint project:unplanned'
+
+addTask() {
+  echo "adding task $1, sprint: $curSprint"
+  task add $1 project:$curSprint +$2 due:$curDueDate
+}
+
+addTaskNext() {
+  echo "adding task $1, sprint: $nextSprint"
+  task add $1 project:$nextSprint +$2 due:$nextDueDate
+}
 
 
 function powerline_precmd() {

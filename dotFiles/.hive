@@ -35,6 +35,11 @@ export HIVE_OPTS="$HIVE_OPTS --hiveconf tez.ignore.lib.uris=true --hiveconf tez.
 export HIVE_OPTS="$HIVE_OPTS --hiveconf hive.root.logger=DEBUG,DRFA"
 export HIVE_OPTS="$HIVE_OPTS --hiveconf hive.support.concurrency=true"
 export HIVE_OPTS="$HIVE_OPTS --hiveconf hive.txn.manager=org.apache.hadoop.hive.ql.lockmgr.DbTxnManager"
+export HIVE_OPTS="$HIVE_OPTS --hiveconf hive.cli.errors.ignore=true"
+export HIVE_OPTS="$HIVE_OPTS --hiveconf hive.metastore.client.capabilities=EXTWRITE,EXTREAD,HIVEBUCKET2,HIVEFULLACIDREAD,HIVEFULLACIDWRITE,HIVECACHEINVALIDATE,HIVEMANAGESTATS,HIVEMANAGEDINSERTWRITE,HIVEMANAGEDINSERTREAD,HIVESQL,HIVEMQT,HIVEONLYMQTWRITE"
+#export HIVE_OPTS="$HIVE_OPTS --hiveconf hive.security.authorization.enabled=true"
+#export HIVE_OPTS="$HIVE_OPTS --hiveconf hive.security.authorization.manager=org.apache.hadoop.hive.ql.security.authorization.DefaultHiveAuthorizationProvider"
+
 
 # bypass CBO falling back to AST
 # export HIVE_OPTS="--hiveconf hive.in.test=true "$HIVE_OPTS
@@ -517,9 +522,8 @@ hiveMakeInternalHDP() {
 }
 
 hiveRunTestInternalHDP() {
-	BUILD_NUMBER=$1
-	echo "mvn test -Dtest=$2 -Dqfile=$3 -Dmaven.repo.local=/Users/vgarg/.m2/repository.hdp -Phadoop-2 -Dtest.output.overwrite=true"
-	mvn test -Dtest=$2 -Dqfile=$3 -Dmaven.repo.local=/Users/vgarg/.m2/repository.hdp -Dtest.output.overwrite=true
+	echo "mvn test -Dtest=$1 -Dqfile=$2 -Dmaven.repo.local=/Users/vgarg/.m2/repository.hdp -Dtest.output.overwrite=true"
+	mvn test -Dtest=$1 -Dqfile=$2 -Dmaven.repo.local=/Users/vgarg/.m2/repository.hdp -Dtest.output.overwrite=true
 }
 
 
