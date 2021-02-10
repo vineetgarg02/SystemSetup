@@ -2,6 +2,7 @@ export PATH=/Applications/IntelliJ\ IDEA\ CE.app/Contents/MacOS:$PATH
 
 # HIVE SOURCE path
 export HIVE_SRC=/Users/vgarg/repos/hive
+export HIVE_CDPD_SRC=/Users/vgarg/repos/hive-cdpd/hive
 export HIVE_TESTS=$HIVE_SRC/ql/src/test
 
 export EARs=/Users/vgarg/EARs
@@ -30,8 +31,9 @@ export HIVE_OPTS="$HIVE_OPTS --hiveconf tez.local.mode=true"
 #export HIVE_OPTS="$HIVE_OPTS --hiveconf fs.default.name=file:///"
 #export HIVE_OPTS="$HIVE_OPTS --hiveconf fs.defaultFS=file:///"
 
-export HIVE_OPTS="$HIVE_OPTS --hiveconf tez.ignore.lib.uris=true --hiveconf tez.runtime.optimize.local.fetch=true --hiveconf hive.tez.container.size=4096 --hiveconf hive.auto.convert.join.noconditionaltask.size=1370 --hiveconf hive.metastore.warehouse.dir=/Users/vgarg/hive_temp/vgarg/hive/warehouse --hiveconf hive.execution.engine=tez --hiveconf hive.user.install.directory=file:///Users/vgarg/hive_temp/vgarg/hive  --hiveconf tez.staging-dir=/Users/vgarg/hive_temp/vgarg/hive --hiveconf tez.ignore.lib.uris=true --hiveconf tez.runtime.optimize.local.fetch=true --hiveconf hive.explain.user=false --hiveconf hive.mapred.mode=nonstrict --hiveconf javax.jdo.option.ConnectionURL=jdbc:derby:;databaseName=/Users/vgarg/hive_temp/metastore_db;create=true --hiveconf hive.log.dir=/Users/vgarg/hive_temp/vgarg --hiveconf hive.log.file=hive.debug2.log "
-
+export HIVE_OPTS="$HIVE_OPTS --hiveconf tez.ignore.lib.uris=true --hiveconf tez.runtime.optimize.local.fetch=true --hiveconf hive.tez.container.size=4096 --hiveconf hive.auto.convert.join.noconditionaltask.size=1370 --hiveconf hive.metastore.warehouse.dir=/Users/vgarg/hive_temp/vgarg/hive/warehouse --hiveconf hive.execution.engine=tez --hiveconf hive.user.install.directory=file:///Users/vgarg/hive_temp/vgarg/hive  --hiveconf tez.staging-dir=/Users/vgarg/hive_temp/vgarg/hive --hiveconf tez.ignore.lib.uris=true --hiveconf tez.runtime.optimize.local.fetch=true --hiveconf hive.explain.user=false --hiveconf hive.mapred.mode=nonstrict --hiveconf javax.jdo.option.ConnectionURL=jdbc:derby:;databaseName=/Users/vgarg/hive_temp/metastore_db;create=true  "
+export HIVE_OPTS="$HIVE_OPTS --hiveconf hive.log.dir=/Users/vgarg/hive_temp/vgarg"
+export HIVE_OPTS="$HIVE_OPTS --hiveconf hive.log.file=hive.debug2.log"
 export HIVE_OPTS="$HIVE_OPTS --hiveconf hive.root.logger=DEBUG,DRFA"
 export HIVE_OPTS="$HIVE_OPTS --hiveconf hive.support.concurrency=true"
 export HIVE_OPTS="$HIVE_OPTS --hiveconf hive.txn.manager=org.apache.hadoop.hive.ql.lockmgr.DbTxnManager"
@@ -203,6 +205,11 @@ hiveRunLipwig() {
 hiveRunTest() {
     echo "mvn test -Dtest=$1 -Dqfile=$2 -Dtest.output.overwrite=true"
     mvn test -Dtest=$1 -Dqfile=$2 -Dtest.output.overwrite=true
+}
+
+hiveDebugTest() {
+    echo "mvn test -Dtest=$1 -Dqfile=$2 -Dmaven.surefire.debug"
+    mvn test -Dtest=$1 -Dqfile=$2 -Dmaven.surefire.debug
 }
 
 hiveRunTestInternalCDPD() {

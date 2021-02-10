@@ -63,9 +63,9 @@ def runTests(issueNo, commentNum):
 
 if len(sys.argv) == 3:
     issueNo = raw_input('Enter Hive jira# (hint: HIVE-XXXXX): ')
-    commentNum=-1
+    commentNum = raw_input('Which comment?')
     mvnCommand = 'mvn test '
-    lines = runTests(issueNo, commentNum)
+    lines = runTests(issueNo, int(commentNum))
 
 else:
     fileName = sys.argv[1]
